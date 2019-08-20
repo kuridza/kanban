@@ -6,6 +6,7 @@
         table {width: 100%;}
         table td {width: 20%;vertical-align: top;}
         .task {border: 1px solid gray; margin: 4px; padding: 4px;}
+        .new {background: #8d8;}
     </style>
 </head>
 <body>
@@ -24,7 +25,7 @@
     </tr>
     <tr>
         <td v-for="(column, ci) in columns">
-            <div :class="{ 'active': activeIndex === ci + '-' + ti }" class="task" v-on:click="showForm(ci, ti, $event)" v-for="(task, ti) in form.column.tasks">
+            <div :class="{ 'active': activeIndex === ci + '-' + ti }" class="task" v-on:click="showForm(ci, ti, $event)" v-for="(task, ti) in column.tasks">
                 <span v-for="tag in task[3]" v-bind:style="{ background: '#' + stringToColour(tag), color: '#' + inverseColor(tag)}">
                     {{tag}}
                 </span><br>
@@ -36,7 +37,7 @@
                 <button v-if="ci < columns.length - 1" v-on:click.stop="setTaskColum(ti, ci, ci + 1)">></button>
             </div>
         </td>
-        <td v-show="form.active" style="background: #eee">
+        <td v-show="form.active" :class="form.class">
             <input v-model="form.title" placeholder="Title"><br>
             <select v-model="form.column">
                 <option v-for="(column, i) in columns" v-bind:value="i">
@@ -53,8 +54,8 @@
             <input type="file" @change="previewFiles" multiple>
             <canvas v-show="form.canvas"></canvas>
             <button v-on:click="toggle">cancel</button><br>
-            <button v-on:click="saveTask(form.column, task)">save</button>
-            <button v-on:click="deleteTask(form.column, task)">delete</button>
+            <button v-on:click="saveTask(form.column, form.task)">save</button>
+            <button v-on:click="deleteTask(form.column, form.task)">delete</button>
         </td>
         <td id="log" v-show="!form.active"><pre></pre></td>
     </tr>
@@ -75,6 +76,7 @@
                 title: '',
                 description: '',
                 active: false,
+                class: 'active',
                 previousColumn: -1,
                 column: -1,
                 task: -1,
@@ -124,6 +126,7 @@
                 this.activeIndex = ci + '-' + ti;
                 this.form.active = true;
                 if(ti > -1) {
+                    this.form.class = 'active';
                     this.form.user = this.users.indexOf(this.columns[ci].tasks[ti][0]);
                     this.form.title = this.columns[ci].tasks[ti][1];
                     this.form.description = this.columns[ci].tasks[ti][2];
@@ -143,6 +146,7 @@
                         this.form.canvas = null;
                     }
                 } else {
+                    this.form.class = 'new';
                     this.form.title = '';
                     this.form.description = '';
                     this.form.column = 0;
