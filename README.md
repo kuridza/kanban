@@ -2,7 +2,7 @@
 
 Basic kanban board, Vue playground
 
-### [Demo](https://jsfiddle.net/L9czmy81/)
+### [Demo](https://kuridza.github.io/kanban/)
 
 ### Screenshot 
 
